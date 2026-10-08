@@ -1,18 +1,26 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="popup.css"><title>Semanthinks</title></head>
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="popup.css"><title>Semanthinks</title>
+  </head>
   <body>
     <main>
-      <h1>Semanthinks</h1><p class="tagline">Rule-based prototype for academic browsing.</p>
+      <header><h1>Semanthinks</h1><p>Local rule-based academic focus prototype.</p></header>
       <label class="switch-row">Enable filtering <input id="enabled" type="checkbox"><span class="switch"></span></label>
       <label>Study context<select id="subject"><option>Computer Science</option><option>Information Technology</option></select></label>
-      <label>Filtering level<select id="strictness"><option value="relaxed">Relaxed</option><option value="balanced">Balanced</option><option value="strict">Strict</option></select></label>
-      <label class="check"><input id="youtube" type="checkbox"> Hide YouTube recommendations</label>
+      <label>Detected-item treatment<select id="filterDisplayMode"><option value="hide">Hide completely</option><option value="blur">Blur and disable interaction</option></select></label>
+      <label class="check"><input id="youtube" type="checkbox"> Filter YouTube distractions and Shorts</label>
       <label class="check"><input id="paragraphs" type="checkbox"> Filter promotional paragraphs</label>
-      <section class="stats"><strong id="hiddenCount">0</strong><span>items hidden this session</span></section>
-      <label class="switch-row">Hide filtered items on this page <input id="pageHidden" type="checkbox" checked><span class="switch"></span></label>
-      <button id="reset" type="button">Reset session count</button>
-      <p class="privacy">All filtering runs locally. The trained AI model will replace these rules in the final system.</p>
-    </main><script src="popup.js"></script>
+      <section class="stats"><strong id="hiddenCount">0</strong><span>automatic filtering actions this session</span></section>
+      <label class="switch-row">Apply filtering on this page <input id="pageHidden" type="checkbox" checked><span class="switch"></span></label>
+      <section class="dashboard">
+        <div class="dashboard-heading"><div><h2>Page dashboard</h2><p id="dashboardSummary">Open to inspect detected items.</p></div><button id="refreshDashboard" class="icon-button" type="button" aria-label="Refresh dashboard">↻</button></div>
+        <div id="detectedList" class="detected-list" aria-live="polite"></div>
+      </section>
+      <button id="reset" class="secondary" type="button">Reset session count</button>
+      <p class="privacy">Detected elements are listed only for the current page. The trained AI model will replace these rules in the final system.</p>
+    </main>
+    <script src="popup.js"></script>
   </body>
 </html>

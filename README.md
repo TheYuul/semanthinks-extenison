@@ -6,6 +6,7 @@
 - Apply conservative English/Tagalog promotional-paragraph filtering using two signals: promotional wording and low academic relevance.
 - Observe dynamically loaded content and report session counts in the popup.
 - Use the popup's per-page Hide/Show toggle if a rule is too aggressive.
+- Use the per-page filtering toggle or dashboard to individually hide, blur, or show every detected item.
 
 ## Install for testing
 

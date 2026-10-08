@@ -1,7 +1,7 @@
 const DEFAULT_SETTINGS = {
   enabled: true,
   subject: "Computer Science",
-  strictness: "balanced",
+  filterDisplayMode: "hide",
   hideYouTubeRecommendations: true,
   hidePromotionalParagraphs: true,
   whitelistedDomains: ["arxiv.org", "ieee.org", "acm.org", "pubmed.ncbi.nlm.nih.gov", "researchgate.net"]

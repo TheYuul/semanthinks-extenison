@@ -1,2 +1,2 @@
-.semanthinks-hidden { display: none !important; }
-.semanthinks-paragraph-hidden { display: none !important; }
+.semanthinks-hidden, .semanthinks-paragraph-hidden { display: none !important; }
+.semanthinks-blurred { filter: blur(9px) !important; opacity: .35 !important; pointer-events: none !important; user-select: none !important; }
