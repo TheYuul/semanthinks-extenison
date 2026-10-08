@@ -1,11 +1,10 @@
 ## What works now
 
-- Enable/disable filtering and choose a CS or IT study context.
+- Enable/disable filtering, choose a CS or IT study context, and choose whether detected items are hidden or blurred and made non-interactive.
 - Hide known YouTube recommendation and advertising UI, including all detected Shorts links/shelves, while leaving the player intact.
 - Remove common advertising/promotional interface elements and promotional modal pop-ups.
 - Apply conservative English/Tagalog promotional-paragraph filtering using two signals: promotional wording and low academic relevance.
 - Observe dynamically loaded content and report session counts in the popup.
-- Use the popup's per-page Hide/Show toggle if a rule is too aggressive.
 - Use the per-page filtering toggle or dashboard to individually hide, blur, or show every detected item.
 
 ## Install for testing
