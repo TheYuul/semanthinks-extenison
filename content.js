@@ -16,10 +16,7 @@ const SELECTORS = {
 let settings = {};
 let queued = false;
 let sessionBypass = false;
-let nextId = 1;
 const processed = new WeakSet();
-const detected = new Map();
-const manualTreatment = new WeakMap();
 
 function normalized(value) { return (value || "").toLowerCase().replace(/\s+/g, " ").trim(); }
 function includesAny(text, terms) { return terms.some((term) => text.includes(term)); }
@@ -39,23 +36,15 @@ function isRepository() {
   const host = location.hostname.toLowerCase();
   return (settings.whitelistedDomains || []).some((domain) => host === domain || host.endsWith(`.${domain}`));
 }
+function selectedSubjectKeywords() {
+  const chosen = new Set(settings.selectedSubjects || []);
+  return (SUBJECT_CATALOG[settings.subject] || []).filter(([id]) => chosen.has(id)).flatMap(([, , keywords]) => keywords);
+}
 function semanticRelevance(text) {
   const value = normalized(text);
-  const academicHits = ACADEMIC_TERMS.filter((term) => value.includes(term)).length;
+  const academicHits = [...new Set([...ACADEMIC_TERMS, ...selectedSubjectKeywords()])].filter((term) => value.includes(term)).length;
   const distractingHits = DISTRACTING_TERMS.filter((term) => value.includes(term)).length;
   return Math.max(0, Math.min(1, 0.5 + academicHits * 0.14 - distractingHits * 0.18));
-}
-function descriptionFor(element, category) {
-  const text = normalized(element.querySelector?.("#video-title, h1, h2, h3, [aria-label]")?.textContent || element.getAttribute?.("aria-label") || element.textContent);
-  const snippet = text.replace(/\s+/g, " ").slice(0, 88);
-  return snippet ? `${category}: ${snippet}` : category;
-}
-function register(element, category) {
-  if (!element) return null;
-  if (!element.dataset.semanthinksId) element.dataset.semanthinksId = `sem-${nextId++}`;
-  const id = element.dataset.semanthinksId;
-  detected.set(id, { element, category, description: descriptionFor(element, category) });
-  return id;
 }
 function saveOriginalStyle(element) {
   if (element.dataset.semanthinksHadInlineStyle !== undefined) return;
@@ -64,11 +53,10 @@ function saveOriginalStyle(element) {
 }
 function currentState(element) {
   if (element.classList.contains("semanthinks-hidden") || element.classList.contains("semanthinks-paragraph-hidden")) return "hidden";
-  if (element.classList.contains("semanthinks-blurred")) return "blurred";
   return "visible";
 }
 function restore(element) {
-  element.classList.remove("semanthinks-hidden", "semanthinks-paragraph-hidden", "semanthinks-blurred");
+  element.classList.remove("semanthinks-hidden", "semanthinks-paragraph-hidden");
   if (element.dataset.semanthinksHadInlineStyle === "true") element.setAttribute("style", element.dataset.semanthinksOriginalStyle || "");
   else element.removeAttribute("style");
   delete element.dataset.semanthinksHadInlineStyle;
@@ -77,37 +65,23 @@ function restore(element) {
 function applyTreatment(element, treatment, category, count = false) {
   if (!element) return false;
   if (location.hostname.includes("youtube.com") && element.closest("#masthead-container, ytd-masthead, ytd-guide-signin-promo-renderer")) return false;
-  register(element, category);
   if (treatment === "show") { restore(element); return true; }
-  // Settings use "hide" while the element state is reported as "hidden".
-  // Compare the normalized state so MutationObserver updates cannot recount
-  // an element that has already been filtered.
-  const desiredState = treatment === "hide" ? "hidden" : "blurred";
-  if (currentState(element) === desiredState) return false;
+  if (currentState(element) === "hidden") return false;
   if (currentState(element) !== "visible") restore(element);
   saveOriginalStyle(element);
-  element.classList.remove("semanthinks-hidden", "semanthinks-paragraph-hidden", "semanthinks-blurred");
-  if (treatment === "blur") {
-    element.classList.add("semanthinks-blurred");
-    element.style.setProperty("filter", "blur(9px)", "important");
-    element.style.setProperty("opacity", "0.35", "important");
-    element.style.setProperty("pointer-events", "none", "important");
-    element.style.setProperty("user-select", "none", "important");
-  } else {
-    element.classList.add(category === "Promotional paragraph" ? "semanthinks-paragraph-hidden" : "semanthinks-hidden");
-    element.style.setProperty("display", "none", "important");
-    element.style.setProperty("visibility", "hidden", "important");
-    element.style.setProperty("pointer-events", "none", "important");
-  }
+  element.classList.remove("semanthinks-hidden", "semanthinks-paragraph-hidden");
+  element.classList.add(category === "Promotional paragraph" ? "semanthinks-paragraph-hidden" : "semanthinks-hidden");
+  element.style.setProperty("display", "none", "important");
+  element.style.setProperty("visibility", "hidden", "important");
+  element.style.setProperty("pointer-events", "none", "important");
   // Nested advertising frames may re-render repeatedly. Count only actions
   // taken by the top-page script so the session statistic remains meaningful.
   if (count && window.top === window) sendRuntimeMessage({ type: "incrementStats", hidden: 1, paragraphs: category === "Promotional paragraph" ? 1 : 0 });
   return true;
 }
 function treatCandidate(element, category) {
-  register(element, category);
-  if (sessionBypass || manualTreatment.get(element) === "show") return false;
-  return applyTreatment(element, manualTreatment.get(element) || settings.filterDisplayMode || "hide", category, true);
+  if (sessionBypass) return false;
+  return applyTreatment(element, "hide", category, true);
 }
 function adContainer(element) {
   const container = element.closest("[id*='ad-container'], [class*='ad-container'], [id^='google_ads'], [id*='advert'], [class*='advert'], [class*='sponsor'], [class*='promotion']");
@@ -121,10 +95,16 @@ function adContainer(element) {
   return element;
 }
 function filterYoutubeCards() {
+  const focusKeywords = selectedSubjectKeywords();
   document.querySelectorAll(SELECTORS.youtubeCards.join(",")).forEach((card) => {
     if (card.closest("ytd-rich-shelf-renderer[is-shorts], ytd-reel-shelf-renderer")) return;
     const title = normalized(card.querySelector("#video-title, a#video-title, h3 a")?.textContent || card.textContent);
-    if (title && !includesAny(title, ACADEMIC_TERMS) && includesAny(title, DISTRACTING_TERMS) && semanticRelevance(title) < 0.47) treatCandidate(card, "Distracting video");
+    if (!title) return;
+    if (focusKeywords.length && !includesAny(title, focusKeywords)) {
+      treatCandidate(card, "Outside selected subjects");
+      return;
+    }
+    if (!includesAny(title, ACADEMIC_TERMS) && includesAny(title, DISTRACTING_TERMS) && semanticRelevance(title) < 0.47) treatCandidate(card, "Distracting video");
   });
 }
 function hideShorts() {
@@ -171,11 +151,8 @@ function scheduleFilter() {
   queued = true;
   setTimeout(() => { queued = false; runFilter(); }, 250);
 }
-function visibleItems() {
-  return [...detected.entries()].filter(([, item]) => item.element.isConnected).map(([id, item]) => ({ id, category: item.category, description: item.description, state: currentState(item.element) }));
-}
 async function start() {
-  settings = await chrome.storage.sync.get({ enabled: true, subject: "Computer Science", filterDisplayMode: "hide", hideYouTubeRecommendations: true, hidePromotionalParagraphs: true, whitelistedDomains: [] });
+  settings = await chrome.storage.sync.get({ enabled: true, subject: "Computer Science", selectedSubjects: [], hideYouTubeRecommendations: true, hidePromotionalParagraphs: true, whitelistedDomains: [] });
   runFilter();
   new MutationObserver(scheduleFilter).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
   chrome.storage.onChanged.addListener((changes, area) => {
@@ -185,15 +162,9 @@ async function start() {
     scheduleFilter();
   });
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (message.type === "restorePage") { sessionBypass = true; detected.forEach(({ element }) => restore(element)); sendResponse({ ok: true }); }
+    if (message.type === "restorePage") { sessionBypass = true; document.querySelectorAll(".semanthinks-hidden, .semanthinks-paragraph-hidden").forEach(restore); sendResponse({ ok: true }); }
     if (message.type === "applyFilter") { sessionBypass = false; runFilter(); sendResponse({ ok: true }); }
     if (message.type === "getPageState") sendResponse({ hidden: !sessionBypass });
-    if (message.type === "getDetectedElements") sendResponse({ items: visibleItems() });
-    if (message.type === "setElementTreatment") {
-      const item = detected.get(message.id);
-      if (!item || !item.element.isConnected) sendResponse({ ok: false });
-      else { manualTreatment.set(item.element, message.treatment); applyTreatment(item.element, message.treatment, item.category); sendResponse({ ok: true }); }
-    }
   });
 }
 start();

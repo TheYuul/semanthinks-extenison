@@ -9,7 +9,7 @@
   "action": { "default_title": "Semanthinks", "default_popup": "popup.html" },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["content.js"],
+    "js": ["subject-catalog.js", "content.js"],
     "css": ["content.css"],
     "all_frames": true,
     "match_about_blank": true,

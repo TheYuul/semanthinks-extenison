@@ -8,19 +8,20 @@
     <main>
       <header><h1>Semanthinks</h1><p>Local rule-based academic focus prototype.</p></header>
       <label class="switch-row">Enable filtering <input id="enabled" type="checkbox"><span class="switch"></span></label>
-      <label>Study context<select id="subject"><option>Computer Science</option><option>Information Technology</option></select></label>
-      <label>Detected-item treatment<select id="filterDisplayMode"><option value="hide">Hide completely</option><option value="blur">Blur and disable interaction</option></select></label>
+      <label>Program<select id="subject"><option>Computer Science</option><option>Information Technology</option><option>Computer Science &amp; Information Technology</option></select></label>
+      <section class="subject-section" aria-labelledby="subject-heading">
+        <div class="section-heading"><h2 id="subject-heading">Subjects to focus on</h2><button id="clearSubjects" type="button">Clear</button></div>
+        <p>Select one or more subjects. YouTube videos outside the selected subjects are hidden; ads and Shorts are always hidden.</p>
+        <div id="subjectList" class="subject-list"></div>
+      </section>
       <label class="check"><input id="youtube" type="checkbox"> Filter YouTube distractions and Shorts</label>
       <label class="check"><input id="paragraphs" type="checkbox"> Filter promotional paragraphs</label>
       <section class="stats"><strong id="hiddenCount">0</strong><span>automatic filtering actions this session</span></section>
       <label class="switch-row">Apply filtering on this page <input id="pageHidden" type="checkbox" checked><span class="switch"></span></label>
-      <section class="dashboard">
-        <div class="dashboard-heading"><div><h2>Page dashboard</h2><p id="dashboardSummary">Open to inspect detected items.</p></div><button id="refreshDashboard" class="icon-button" type="button" aria-label="Refresh dashboard">↻</button></div>
-        <div id="detectedList" class="detected-list" aria-live="polite"></div>
-      </section>
       <button id="reset" class="secondary" type="button">Reset session count</button>
-      <p class="privacy">Detected elements are listed only for the current page. The trained AI model will replace these rules in the final system.</p>
+      <p class="privacy">Your selected subjects and filtering rules stay in this browser. A trained AI model will replace these prototype rules in the final system.</p>
     </main>
+    <script src="subject-catalog.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>
