@@ -2,11 +2,12 @@
 
 - Enable/disable filtering, choose a CS or IT program, then select the curriculum subjects to focus on.
 - Use curriculum-derived recommendation keywords for each selected subject. When subjects are selected, YouTube result cards outside those subjects are hidden; advertisements and Shorts are always hidden.
+- Search a course title, syllabus concept, or related topic in the popup to find its matching subject. The popup also suggests further concepts to explore for every selected subject.
 - Hide known YouTube recommendation and advertising UI, including all detected Shorts links/shelves, while leaving the player intact.
 - Remove common advertising/promotional interface elements and promotional modal pop-ups.
 - Apply conservative English/Tagalog promotional-paragraph filtering using two signals: promotional wording and low academic relevance.
 - Observe dynamically loaded content and report session counts in the popup.
-- Use the per-page filtering toggle or dashboard to individually hide, blur, or show every detected item.
+- Use the per-page filtering toggle to temporarily restore or reapply filtering.
 
 ## Install for testing
 

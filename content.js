@@ -38,7 +38,9 @@ function isRepository() {
 }
 function selectedSubjectKeywords() {
   const chosen = new Set(settings.selectedSubjects || []);
-  return (SUBJECT_CATALOG[settings.subject] || []).filter(([id]) => chosen.has(id)).flatMap(([, , keywords]) => keywords);
+  return (SUBJECT_CATALOG[settings.subject] || [])
+    .filter(([id]) => chosen.has(id))
+    .flatMap(([id, , keywords]) => [...keywords, ...(SUBJECT_RECOMMENDATIONS[id] || [])]);
 }
 function semanticRelevance(text) {
   const value = normalized(text);

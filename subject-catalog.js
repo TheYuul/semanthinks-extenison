@@ -3,6 +3,7 @@
 const SUBJECT_CATALOG = {
   "Computer Science": [
     ["cs-programming", "Computer Programming", ["programming", "coding", "algorithm", "java", "python", "c++", "javascript", "variables", "functions"]],
+    ["cs-introduction-computing", "Introduction to Computing", ["introduction to computing", "computer system", "hardware", "software", "number system", "internet"]],
     ["cs-discrete", "Discrete Structures", ["discrete mathematics", "logic", "set theory", "proof", "graph theory", "combinatorics", "boolean algebra"]],
     ["cs-database", "Database Management Systems", ["database", "sql", "mysql", "postgresql", "normalization", "erd", "entity relationship"]],
     ["cs-information-management", "Information Management", ["information management", "data management", "information system", "data governance"]],
@@ -26,11 +27,13 @@ const SUBJECT_CATALOG = {
     ["cs-operating-systems", "Operating Systems", ["operating systems", "process scheduling", "memory management", "linux", "kernel", "threads"]],
     ["cs-distributed", "Parallel & Distributed Computing", ["distributed computing", "parallel computing", "concurrent programming", "cluster computing"]],
     ["cs-software-engineering", "Software Engineering", ["software engineering", "software development", "agile", "scrum", "testing", "software design"]],
+    ["cs-social-professional", "Social & Professional Issues", ["computing ethics", "data privacy", "intellectual property", "software copyright", "professional practice"]],
     ["cs-automata", "Automata Theory & Formal Languages", ["automata", "formal languages", "finite state machine", "regular expression", "turing machine"]],
     ["cs-thesis", "Thesis & Research", ["thesis", "research methodology", "literature review", "research paper", "capstone"]]
   ],
   "Information Technology": [
     ["it-programming", "Computer Programming", ["programming", "coding", "java", "python", "c++", "javascript", "variables", "functions"]],
+    ["it-introduction-computing", "Introduction to Computing", ["introduction to computing", "computer system", "hardware", "software", "number system", "internet"]],
     ["it-discrete", "Discrete Mathematics", ["discrete mathematics", "logic", "set theory", "proof", "graph theory", "combinatorics"]],
     ["it-database", "Database Management Systems", ["database", "sql", "mysql", "postgresql", "normalization", "erd", "entity relationship"]],
     ["it-business-analytics", "Business Analytics", ["business analytics", "business intelligence", "data analysis", "dashboard", "power bi", "excel analytics"]],
@@ -51,8 +54,65 @@ const SUBJECT_CATALOG = {
     ["it-oop", "Object-Oriented Programming", ["object oriented programming", "oop", "classes", "objects", "inheritance", "java", "c#"]],
     ["it-quantitative", "Quantitative Methods & Modeling", ["quantitative methods", "modeling", "simulation", "statistics", "data analysis"]],
     ["it-systems-admin", "Systems Administration & Maintenance", ["systems administration", "server administration", "linux administration", "windows server", "maintenance"]],
+    ["it-social-professional", "Social & Professional Issues", ["computing ethics", "data privacy", "intellectual property", "software copyright", "professional practice"]],
     ["it-internship", "Practicum / Internship", ["internship", "practicum", "on the job training", "it career", "portfolio"]]
   ]
+};
+
+// Syllabus-based concepts shown to students after they select a major subject.
+const SUBJECT_RECOMMENDATIONS = {
+  "cs-programming": ["flowcharting", "C language", "control structures", "arrays", "functions"],
+  "cs-introduction-computing": ["computer hardware", "operating systems", "number systems", "internet protocols"],
+  "cs-discrete": ["propositional logic", "relations and functions", "recurrence relations", "graph traversal"],
+  "cs-database": ["database indexing", "SQL joins", "transactions", "query optimization", "database security"],
+  "cs-information-management": ["data lifecycle", "information quality", "data governance", "knowledge management"],
+  "cs-data-structures": ["binary search trees", "hash tables", "graph algorithms", "recursion", "algorithm analysis"],
+  "cs-calculus": ["limits", "derivatives", "integrals", "optimization problems"],
+  "cs-digital-logic": ["logic gates", "Karnaugh maps", "sequential circuits", "finite state machines"],
+  "cs-graphics": ["coordinate systems", "3D transformations", "rasterization", "computer vision"],
+  "cs-security": ["encryption", "access control", "risk assessment", "penetration testing"],
+  "cs-robotics": ["microcontrollers", "sensor integration", "actuators", "robot navigation"],
+  "cs-networks": ["OSI model", "IP addressing", "routing protocols", "network troubleshooting"],
+  "cs-oop": ["encapsulation", "polymorphism", "design patterns", "exception handling"],
+  "cs-data-science": ["data cleaning", "exploratory analysis", "data visualization", "predictive modeling"],
+  "cs-programming-languages": ["lexical analysis", "parsing", "type systems", "runtime environments"],
+  "cs-complexity": ["Big O notation", "divide and conquer", "dynamic programming", "NP-completeness"],
+  "cs-emerging-tech": ["cloud computing", "Internet of Things", "blockchain", "augmented reality"],
+  "cs-architecture": ["instruction sets", "cache memory", "pipelining", "assembly language"],
+  "cs-hci": ["user research", "wireframing", "usability testing", "accessibility"],
+  "cs-intelligent-systems": ["supervised learning", "neural networks", "natural language processing", "expert systems"],
+  "cs-mobile": ["mobile UI design", "app lifecycle", "local storage", "API integration"],
+  "cs-modeling": ["system dynamics", "Monte Carlo simulation", "queuing models", "model validation"],
+  "cs-operating-systems": ["process scheduling", "virtual memory", "file systems", "deadlocks"],
+  "cs-distributed": ["concurrency", "message passing", "fault tolerance", "distributed databases"],
+  "cs-software-engineering": ["requirements analysis", "version control", "unit testing", "continuous integration"],
+  "cs-social-professional": ["data privacy", "software licensing", "digital ethics", "professional responsibility"],
+  "cs-automata": ["regular expressions", "finite automata", "context-free grammars", "Turing machines"],
+  "cs-thesis": ["research design", "literature review", "data collection", "research ethics"],
+  "it-programming": ["flowcharting", "C language", "control structures", "arrays", "functions"],
+  "it-introduction-computing": ["computer hardware", "operating systems", "number systems", "internet protocols"],
+  "it-discrete": ["propositional logic", "relations and functions", "recurrence relations", "graph traversal"],
+  "it-database": ["database indexing", "SQL joins", "transactions", "query optimization", "database security"],
+  "it-business-analytics": ["data visualization", "descriptive analytics", "Power BI", "decision support systems"],
+  "it-data-structures": ["binary search trees", "hash tables", "graph algorithms", "recursion"],
+  "it-information-management": ["data lifecycle", "information quality", "data governance", "knowledge management"],
+  "it-platform": ["virtualization", "cloud deployment", "containerization", "platform as a service"],
+  "it-web": ["responsive design", "DOM manipulation", "REST API", "web security"],
+  "it-hci": ["user research", "wireframing", "usability testing", "accessibility"],
+  "it-integrative": ["API integration", "web services", "JSON", "software integration"],
+  "it-networking": ["OSI model", "IP addressing", "routing protocols", "network troubleshooting"],
+  "it-emerging-tech": ["cloud computing", "Internet of Things", "blockchain", "augmented reality"],
+  "it-data-science": ["data cleaning", "exploratory analysis", "data visualization", "predictive modeling"],
+  "it-multimedia": ["digital imaging", "audio editing", "video production", "interactive media"],
+  "it-systems-integration": ["enterprise architecture", "system interoperability", "API gateway", "integration testing"],
+  "it-security": ["encryption", "access control", "risk assessment", "penetration testing"],
+  "it-capstone": ["research design", "project proposal", "system testing", "technical documentation"],
+  "it-mobile": ["mobile UI design", "app lifecycle", "local storage", "API integration"],
+  "it-oop": ["encapsulation", "polymorphism", "design patterns", "exception handling"],
+  "it-quantitative": ["descriptive statistics", "probability", "hypothesis testing", "simulation"],
+  "it-systems-admin": ["user management", "server configuration", "backup and recovery", "system monitoring"],
+  "it-social-professional": ["data privacy", "software licensing", "digital ethics", "professional responsibility"],
+  "it-internship": ["IT portfolio", "technical interview", "workplace communication", "project documentation"]
 };
 
 // Combined mode keeps duplicate course names distinguishable in the checklist.

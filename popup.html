@@ -9,10 +9,21 @@
       <header><h1>Semanthinks</h1><p>Local rule-based academic focus prototype.</p></header>
       <label class="switch-row">Enable filtering <input id="enabled" type="checkbox"><span class="switch"></span></label>
       <label>Program<select id="subject"><option>Computer Science</option><option>Information Technology</option><option>Computer Science &amp; Information Technology</option></select></label>
+      <section class="topic-search" aria-labelledby="topic-search-heading">
+        <h2 id="topic-search-heading">Find a subject</h2>
+        <label class="sr-only" for="subjectSearch">Search a topic or subject</label>
+        <input id="subjectSearch" type="search" placeholder="Try: Regular Expression or Database Indexing" autocomplete="off">
+        <div id="searchResults" class="search-results" aria-live="polite"></div>
+      </section>
       <section class="subject-section" aria-labelledby="subject-heading">
         <div class="section-heading"><h2 id="subject-heading">Subjects to focus on</h2><button id="clearSubjects" type="button">Clear</button></div>
         <p>Select one or more subjects. YouTube videos outside the selected subjects are hidden; ads and Shorts are always hidden.</p>
         <div id="subjectList" class="subject-list"></div>
+      </section>
+      <section class="recommendations" aria-labelledby="recommendations-heading">
+        <h2 id="recommendations-heading">Recommended topics to explore</h2>
+        <p id="recommendationHint">Select a subject to see related concepts.</p>
+        <div id="recommendationList" class="recommendation-list"></div>
       </section>
       <label class="check"><input id="youtube" type="checkbox"> Filter YouTube distractions and Shorts</label>
       <label class="check"><input id="paragraphs" type="checkbox"> Filter promotional paragraphs</label>
